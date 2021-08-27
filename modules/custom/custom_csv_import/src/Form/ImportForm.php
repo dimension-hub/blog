@@ -2,6 +2,7 @@
 
 namespace Drupal\custom_csv_import\Form;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\file\Entity\File;
@@ -13,6 +14,25 @@ use Drupal\custom_csv_import\CSVBatchImport;
  * @package Drupal\custom_csv_import\Form
  */
 class ImportForm extends ConfigFormBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(ConfigFactoryInterface $config_factory) {
+    parent::__construct($config_factory);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getPluginList(): array {
+    $definitions = \Drupal::service('plugin.manager.custom_csv_import')->getDefinitions();
+    $plugin_list = [];
+    foreach ($definitions as $plugin_id => $plugin) {
+      $plugin_list[$plugin_id] = $plugin['label']->render();
+    }
+    return $plugin_list;
+  }
 
   /**
    * {@inheritdoc}
@@ -55,12 +75,20 @@ class ImportForm extends ConfigFormBase {
         '#markup' => $this->t('This file was uploaded at @created.', ['@created' => $created]),
       ];
 
-      // Добавляем кнопку для начала импорт со своим собственным submit handler.
+      $form['import_plugin'] = [
+        '#title' => $this->t('Select content type to import'),
+        '#type' => 'select',
+        '#options' => $this->getPluginList(),
+        '#empty_option' => '- Select -',
+      ];
+
+      // Добавляем кнопку для начала импорта со свои собственным submit handler.
       $form['actions']['start_import'] = [
         '#type' => 'submit',
         '#value' => $this->t('Start import'),
         '#submit' => ['::startImport'],
         '#weight' => 100,
+        '#name' => 'start_import',
       ];
     }
 
@@ -96,8 +124,11 @@ class ImportForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state): void {
     parent::validateForm($form, $form_state);
+    if ($form_state->getTriggeringElement()['#name'] === 'start_import' && !$form_state->getValue('import_plugin')) {
+      $form_state->setErrorByName('import_plugin', t('You must select content type to import.'));
+    }
   }
 
   /**
@@ -114,7 +145,7 @@ class ImportForm extends ConfigFormBase {
 
     // Первым делом проверяем, загружались ли ранее файлы, и если загружались
     // отличается ли новый файл от предыдущего.
-    if (empty($fid_old) || $fid_old != $fid_form) {
+    if (empty($fid_old) || $fid_old !== $fid_form) {
       // Если ранее загружался, то получается что в форму загружен новый файл,
       // следовательно, нам необходимо указать что старый файл мы больше не
       // используем.
@@ -154,7 +185,8 @@ class ImportForm extends ConfigFormBase {
     $skip_first_line = $config->get('skip_first_line');
     $delimiter = $config->get('delimiter');
     $enclosure = $config->get('enclosure');
-    $import = new CSVBatchImport($fid, $skip_first_line, $delimiter, $enclosure);
+    $plugin_id = $form_state->getValue('import_plugin');
+    $import = new CSVBatchImport($plugin_id, $fid, $skip_first_line, $delimiter, $enclosure);
     $import->setBatch();
   }
 
