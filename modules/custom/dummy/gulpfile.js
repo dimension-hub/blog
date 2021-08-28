@@ -1,24 +1,24 @@
+'use strict';
+
 const gulp = require('gulp');
 const sass = require('gulp-sass');
 const sourcemaps = require('gulp-sourcemaps');
-const autoprefixer = require('autoprefixer');
-const postcss = require('gulp-postcss');
-const lost = require('lost');
 
-gulp.task('sass', function() {
-  return gulp.src('./assets/styles/scss/styles-*.scss')
-    .pipe(sourcemaps.init())
-    .pipe(sass().on('error', sass.logError))
-    .pipe(postcss([
-      lost(),
-      autoprefixer(),
-    ]))
-    .pipe(sourcemaps.write('./maps'))
-    .pipe(gulp.dest('./assets/styles/css/'));
+const paths = {
+  scss: 'styles/scss/**',
+  css: 'styles/scss/styles.scss'
+};
+
+gulp.task('sass', function () {
+  return gulp.src(paths.css)
+      .pipe(sourcemaps.init())
+      .pipe(sass().on('error', sass.logError))
+      .pipe(sourcemaps.write('./maps'))
+      .pipe(gulp.dest('./styles/css/'));
 });
 
-gulp.task('watch', function() {
-  gulp.watch('./assets/styles/scss/**', ['sass']);
+gulp.task('watch', function () {
+  gulp.watch(paths.scss, ['sass']);
 });
 
 gulp.task('default', ['watch', 'sass']);

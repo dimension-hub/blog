@@ -1,5 +1,6 @@
-name: Dummy
-description: Just code examples for testing PhpStorm integration.
-core: 8.x
-version: 1.x
+name: Dummy Hook
+description: Example with hook_theme().
+version: 1.0
+core_version_requirement: ^8 || ^9
 type: module
+package: Custom
