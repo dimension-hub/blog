@@ -1,7 +1,7 @@
 'use strict';
 
 const gulp = require('gulp');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('node-sass'));
 const sourcemaps = require('gulp-sourcemaps');
 
 const paths = {
@@ -11,14 +11,14 @@ const paths = {
 
 gulp.task('sass', function () {
   return gulp.src(paths.css)
-      .pipe(sourcemaps.init())
-      .pipe(sass().on('error', sass.logError))
-      .pipe(sourcemaps.write('./maps'))
-      .pipe(gulp.dest('./styles/css/'));
+    .pipe(sourcemaps.init())
+    .pipe(sass().on('error', sass.logError))
+    .pipe(sourcemaps.write('./maps'))
+    .pipe(gulp.dest('./styles/css/'));
 });
 
 gulp.task('watch', function () {
-  gulp.watch(paths.scss, ['sass']);
+  return gulp.watch(paths.scss, gulp.series('sass'));
 });
 
-gulp.task('default', ['watch', 'sass']);
+gulp.task('default', gulp.series('watch', 'sass'));

@@ -6,6 +6,11 @@
   "dependencies": {
     "gulp": "4.0.2",
     "gulp-sass": "5.0.0",
-    "gulp-sourcemaps": "3.0.0"
+    "gulp-sourcemaps": "3.0.0",
+    "node-sass": "^6.0.1",
+    "package.json": "^2.0.1"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.27.5"
   }
 }

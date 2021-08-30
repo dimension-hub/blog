@@ -1,5 +1,0 @@
-name: Dummy
-description: Just code examples for testing PhpStorm integration.
-version: 1.x
-core_version_requirement: ^8 || ^9
-type: module
