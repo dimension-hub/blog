@@ -2,4 +2,4 @@ services:
   custom_twig.twig_extensions:
     class: Drupal\custom_twig\Twig\TwigExtension\Extensions
     tags:
-      - { name: twig_extension }
+      - { name: twig.extension }

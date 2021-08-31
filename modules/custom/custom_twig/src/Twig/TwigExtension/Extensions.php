@@ -6,16 +6,16 @@ use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Component\Serialization\Json;
-use Drupal\components\Template\TwigExtension;
 use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
+use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /**
  * Custom twig extensions.
  */
-class Extensions extends TwigExtension {
+class Extensions extends AbstractExtension {
 
   /**
    * {@inheritdoc}
