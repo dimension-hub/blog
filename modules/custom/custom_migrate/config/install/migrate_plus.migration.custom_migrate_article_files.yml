@@ -1,28 +1,34 @@
-id: custom_migrate_articles_files
+id: custom_migrate_article_files
 label: 'Article files'
 migration_group: custom_migrate
 migration_tags:
   - file
   - article
 source:
-  plugin: csv
-  path: modules/custom/custom_migrate/assets/articles.csv
+  plugin: custom_migrate_csv
+  module: custom_migrate
+  # Его настройки.
+  path: assets/articles.csv
   delimiter: ';'
   enclosure: '"'
   header_row_count: 1
-  column_names:
+  columns:
     0:
-      id: 'Article id'
+      key: id
+      label: 'Article id'
     1:
-      title: 'Title'
+      key: title
+      label: 'Title'
     2:
-      image_url: 'Promo image url'
+      key: image_url
+      label: 'Promo image url'
     3:
-      uid: 'Author id'
+      key: uid
+      label: 'Author id'
     4:
-      body: 'Content'
-  ids:
-    - id
+      key: body
+      label: 'Content'
+  key: id
   constants:
     status: 1
     uid: 1
@@ -36,7 +42,7 @@ process:
       source:
         - image_url
         - 'constants/destination'
-      rename: true
+      file_exists: rename
     -
       plugin: skip_on_empty
       method: row

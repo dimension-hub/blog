@@ -96,6 +96,9 @@ class CSV extends SourcePluginBase implements ConfigurableInterface {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $migration);
     $this->setConfiguration($configuration);
 
+//    echo "<pre>";
+//    var_dump($configuration);
+//    echo "</pre>";
     // Path is required.
     if (empty($this->configuration['path'])) {
       throw new \InvalidArgumentException('You must declare the "path" to the source CSV file in your source settings.');

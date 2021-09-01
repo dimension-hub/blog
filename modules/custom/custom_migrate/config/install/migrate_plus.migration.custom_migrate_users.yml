@@ -12,25 +12,28 @@ migration_tags:
 # Описываем источник данных.
 source:
   # Тип плагина при помощи которого получаются данные.
-  plugin: csv
+  plugin: custom_migrate_csv
+  module: custom_migrate
   # Его настройки.
-  path: modules/custom/custom_migrate/assets/users.csv
+  path: assets/users.csv
   delimiter: ';'
   enclosure: '"'
   # Так как первая строка используется для заголовков в файле, мы должны её
   # пропускать, чтобы они не ушли на импорт.
   header_row_count: 1
-  column_names:
+  columns:
     0:
-      id: 'User id'
+      key: id
+      label: 'User id'
     1:
-      name: 'User name'
+      key: name
+      label: 'User name'
     2:
-      email: 'User email'
+      key: email
+      label: 'User email'
   # Ключи данного источника. Данный плагин требует указание ключей в виде
   # массива, так что даже единственный ключ должен объявляться как массив.
-  ids:
-    - id
+  key: id
   # Ниже константы для данной миграции. Это уже особенность миграций, а не
   # конкретного плагина и работает со всеми.
   constants:
