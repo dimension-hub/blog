@@ -2,53 +2,50 @@
 
 /**
  * @file
- * Main file for hooks and functions.
+ * Main file for hooks and custom functions.
  */
-
-use Drupal\Core\Form\FormStateInterface;
-
-/**
- * Implements hook_form_alter().
- *
- * This hook must have link to it's definition.
- * You can press CTRL + Q to read this documentation right here.
- */
-function dummy_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  $messenger = \Drupal::messenger();
-  $messenger->addMessage($form_id);
-}
-
-/**
- * Implements hook_form_FORM_ID_alter() for user_login_form.
- *
- * This hook only can be autocomplete, but not have link to documentation.
- */
-function dummy_form_user_login_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  $form['example'] = [
-    '#markup' => t('Help'),
-  ];
-}
-
-/**
- * Reverse string.
- *
- * @param string $text
- *   Text needs to be reversed.
- *
- * @return string
- *   A new string with reversed value.
- */
-function dummy_example_custom_function($text) {
-  return strrev($text);
-}
 
 /**
  * Implements hook_theme().
  */
-function dummy_theme($existing, $type, $theme, $path) {
+function dummy_theme($existing, $type, $theme, $path): array {
   return [
-    'dummy_some_template' => [
+    'dummy_example_first' => [
       'variables' => [],
     ],
+    // Данный пример будет использоваться для вывода содержимого в виде списка,
+    // а его препрцоесс мы венесем в отдельный файл.
+    'dummy_example_second' => [
+      'variables' => [
+        'list_type' => 'ul',
+        'items' => NULL,
+        'attributes' => NULL,
+      ],
+      'file' => 'dummy.theme.inc',
+    ],
+    'dummy_example_quote' => [
+      'variables' => [
+        'quote' => NULL,
+        'author' => NULL,
+        'year' => NULL,
+        'source_title' => NULL,
+        'source_url' => NULL,
+      ],
+      'file' => 'dummy.theme.inc',
+      'pattern' => 'dummy_example_quote__',
+    ],
+    'hook_theme_form_example' => [
+      'render element' => 'form',
+      'file' => 'dummy.theme.inc',
+    ],
   ];
+}
+
+/**
+ * Implements template_preprocess_HOOK().
+ * Обработчик переменных для первого примера.
+ */
+function template_preprocess_dummy_example_first(&$variables) {
+  $date_formatter = \Drupal::service('date.formatter');
+  $variables['date'] = $date_formatter->format(time());
 }
